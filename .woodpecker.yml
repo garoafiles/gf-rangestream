@@ -1,0 +1,33 @@
+when:
+  - event: [push, pull_request]
+
+steps:
+  test:
+    image: golang:1.25
+    commands:
+      - go build ./...
+      - go vet ./...
+      - go test -race -count=1 ./...
+
+  release:
+    image: node:22-alpine
+    when:
+      - event: push
+        branch: main
+    environment:
+      GITEA_TOKEN:
+        from_secret: gitea_token
+    commands:
+      - apk add --no-cache git
+      - git config --global user.name "Garoa Files"
+      - git config --global user.email "garoafiles@garoafiles.com"
+      - git remote set-url origin "https://x-access-token:$${GITEA_TOKEN}@codeberg.org/garoafiles/gf-rangestream.git"
+      - npx --yes
+          -p semantic-release
+          -p @semantic-release/commit-analyzer
+          -p @semantic-release/release-notes-generator
+          -p @semantic-release/changelog
+          -p @semantic-release/git
+          -p @saithodev/semantic-release-gitea
+          semantic-release
+    depends_on: [test]
