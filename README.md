@@ -1,5 +1,10 @@
 # gf-rangestream
 
+> **Canonical repository:** <https://codeberg.org/garoafiles/gf-rangestream>
+>
+> The copy on GitHub is an automatic mirror — issues, PRs, and discussions
+> there are not monitored. Please file everything on Codeberg.
+
 A thin HTTP Range streaming helper for Go. Wraps `http.ServeContent` with a
 small hook surface: request validators, a pluggable serve backend, and
 byte-count observability.
